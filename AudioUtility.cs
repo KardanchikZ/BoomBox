@@ -13,7 +13,6 @@ namespace BoomBox
         {
             AudioPlayer audioPlayer = AudioPlayer.CreateOrGet(audioPlayerName);
 
-            FileName = FileName += ".ogg";
             string fullPath = Path.Combine(Paths.Configs, _config.AudioFolder, FileName);
 
             if (!audioPlayer.TryGetSpeaker(audioPlayerName, out Speaker speaker))

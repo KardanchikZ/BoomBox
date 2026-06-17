@@ -17,7 +17,7 @@ namespace BoomBox
 
         public static Plugin Instance { get; private set; }
 
-        public static List<String> Musics = null;
+        public static List<String> Musics = new();
 
         public override void OnEnabled()
         {
@@ -31,11 +31,12 @@ namespace BoomBox
 
         public override void OnDisabled()
         {
-            Instance = null;
+            
 
             Exiled.Events.Handlers.Map.Generated -= MapGenerated;
             CustomItem.UnregisterItems();
 
+            Instance = null;
             base.OnDisabled();
         }
         private void MapGenerated()

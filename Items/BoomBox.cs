@@ -65,7 +65,7 @@ namespace BoomBox.Items
         {
             if (ev.Pickup is RadioPickup radio)
             {
-                radio.IsEnabled = false;
+                radio.IsEnabled = true;
             }
         }
 
@@ -97,7 +97,7 @@ namespace BoomBox.Items
             if (!Check(ev.Player.CurrentItem)) return;
             Clear(ev.Player);
             MusicId++;
-            if (MusicId > Plugin.Musics.Count)
+            if (MusicId >= Plugin.Musics.Count)
             {
                 MusicId = 0;
             }
