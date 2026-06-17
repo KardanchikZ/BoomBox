@@ -22,7 +22,8 @@ namespace BoomBox
         public override void OnEnabled()
         {
             Instance = this;
-            Exiled.Events.Handlers.Map.Generated -= MapGenerated;
+
+            Exiled.Events.Handlers.Map.Generated += MapGenerated;
             CustomItem.RegisterItems();
 
             base.OnEnabled();
@@ -31,14 +32,17 @@ namespace BoomBox
         public override void OnDisabled()
         {
             Instance = null;
+
             Exiled.Events.Handlers.Map.Generated -= MapGenerated;
             CustomItem.UnregisterItems();
+
             base.OnDisabled();
         }
         private void MapGenerated()
         {
             LoadMusics();
         }
+
         private void LoadMusics()
         {
             string audioFolderPath = Config.AudioFolder;
