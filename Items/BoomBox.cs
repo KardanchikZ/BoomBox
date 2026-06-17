@@ -77,6 +77,10 @@ namespace BoomBox.Items
                 Log.Warn("Музыки нет!");
                 return;
             }
+            if (ev.Radio.BatteryLevel == 0)
+            {
+                ev.Player.ShowHint("Бумбокс разрядился! :(", 3);
+            }
             if (ev.Player == null) return;
             if (ev.Player.CurrentItem == null) return;
             if (!Check(ev.Player.CurrentItem)) return;
@@ -95,11 +99,13 @@ namespace BoomBox.Items
             if (ev.Player == null) return;
             if (ev.Player.CurrentItem == null) return;
             if (!Check(ev.Player.CurrentItem)) return;
-            MusicId++;
-            if (MusicId >= Plugin.Musics.Count)
+            MusicId += 1;
+            if (MusicId > Plugin.Musics.Count)
             {
                 MusicId = 0;
             }
+
+            Log.Debug($"musicID: {MusicId}. Musics Count {Plugin.Musics.Count}");
             ev.Player.ShowHint($"Id: {MusicId}, Music Name: {Plugin.Musics[MusicId]}", 3);
         }
 
@@ -107,7 +113,7 @@ namespace BoomBox.Items
         {
             if (player == null) return;
 
-            SchematicObject schematic = ObjectSpawner.SpawnSchematic(Config.SchematicName, player.Position - new Vector3(0, -0.3f, 0), new Vector3(0, player.Rotation.eulerAngles.y, 0));
+            SchematicObject schematic = ObjectSpawner.SpawnSchematic(Config.SchematicName, player.Position - new Vector3(0, -0.35f, 0), new Vector3(0, player.Rotation.eulerAngles.y, 0));
             if (schematic == null)
             {
                 Log.Error($"Failed spawn schematic {Config.SchematicName}");
