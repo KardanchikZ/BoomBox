@@ -1,5 +1,7 @@
 ﻿using Exiled.API.Features;
 using Exiled.CustomItems.API.Features;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
 
@@ -15,6 +17,7 @@ namespace BoomBox
 
         public static Plugin Instance { get; private set; }
 
+        public static List<String> Musics = null;
 
         public void OnEnabled()
         {
@@ -42,7 +45,7 @@ namespace BoomBox
 
                 foreach (string filePath in musicFiles)
                 {
-                    Config.Musics.Add(Path.GetFileName(filePath));
+                    Musics.Add(Path.GetFileName(filePath));
                 }
             }
         }

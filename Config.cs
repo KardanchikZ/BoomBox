@@ -1,6 +1,7 @@
-﻿using Exiled.API.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using Exiled.API.Features;
+using Exiled.API.Interfaces;
+using System.ComponentModel;
+using System.IO;
 
 namespace BoomBox
 {
@@ -9,7 +10,8 @@ namespace BoomBox
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = true;
         public static uint IdBoomBox { get; set; } = 1;
-
-        public static List<String> Musics { get; set; } = null;
+        public static string SchematicName { get; set; } = "BoomBox";
+        [Description("Путь к папке с аудио")]
+        public string AudioFolder { get; set; } = Path.Combine(Paths.Configs, "Audios");
     }
 }

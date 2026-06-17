@@ -117,10 +117,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AudioUtility.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Items\BoomBox.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchematicWithAudio.cs" />
+    <Compile Include="Items\BoomBoxData.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
