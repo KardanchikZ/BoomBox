@@ -45,7 +45,7 @@ namespace BoomBox
 
         private void LoadMusics()
         {
-            string audioFolderPath = Config.AudioFolder;
+            string audioFolderPath = Path.Combine(Paths.Configs, Config.AudioFolder);
 
             if (Directory.Exists(audioFolderPath))
             {

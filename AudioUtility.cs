@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using Exiled.API.Features;
+using System.IO;
 using UnityEngine;
 
 namespace BoomBox
@@ -13,7 +14,7 @@ namespace BoomBox
             AudioPlayer audioPlayer = AudioPlayer.CreateOrGet(audioPlayerName);
 
             FileName = FileName += ".ogg";
-            string fullPath = Path.Combine(_config.AudioFolder, FileName);
+            string fullPath = Path.Combine(Paths.Configs, _config.AudioFolder, FileName);
 
             if (!audioPlayer.TryGetSpeaker(audioPlayerName, out Speaker speaker))
             {

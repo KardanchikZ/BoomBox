@@ -14,6 +14,6 @@ namespace BoomBox
         [Description("Название схемы")]
         public static string SchematicName { get; set; } = "BoomBox";
         [Description("Путь к папке с аудио")]
-        public string AudioFolder { get; set; } = Path.Combine(Paths.Configs, "BoomBoxAudios");
+        public string AudioFolder { get; set; } = "BoomBoxAudios";
     }
 }
