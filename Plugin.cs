@@ -8,17 +8,17 @@ namespace BoomBox
 {
     public class Plugin : Plugin<Config>
     {
-        public string Name => "BoomBox";
+        public override string Name => "BoomBox";
 
-        public string Prefix => "BoomBox";
+        public override string Prefix => "BoomBox";
 
-        public string Author => "Kardanchik";
+        public override string Author => "Kardanchik";
 
         public static Plugin Instance { get; private set; }
 
         public static List<String> Musics = null;
 
-        public void OnEnabled()
+        public override void OnEnabled()
         {
             Instance = this;
             LoadMusics();
@@ -27,7 +27,7 @@ namespace BoomBox
             base.OnEnabled();
         }
 
-        public void OnDisabled()
+        public override void OnDisabled()
         {
             Instance = null;
             CustomItem.UnregisterItems();

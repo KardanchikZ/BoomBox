@@ -9,9 +9,11 @@ namespace BoomBox
     {
         public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; } = true;
-        public static uint IdBoomBox { get; set; } = 1;
+        [Description("Айди предмета")]
+        public static uint IdBoomBox { get; set; } = 7;
+        [Description("Название схемы")]
         public static string SchematicName { get; set; } = "BoomBox";
         [Description("Путь к папке с аудио")]
-        public string AudioFolder { get; set; } = Path.Combine(Paths.Configs, "Audios");
+        public string AudioFolder { get; set; } = Path.Combine(Paths.Configs, "BoomBoxAudios");
     }
 }

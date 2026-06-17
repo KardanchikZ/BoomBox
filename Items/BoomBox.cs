@@ -15,7 +15,7 @@ using UnityEngine;
 namespace BoomBox.Items
 {
     [CustomItem(ItemType.Radio)]
-    public class BoomBox : CustomWeapon
+    public class BoomBox : CustomItem
     {
         public override uint Id { get; set; } = Config.IdBoomBox;
         public override string Name { get; set; } = "BoomBox";
@@ -96,18 +96,18 @@ namespace BoomBox.Items
         {
             if (player == null) return;
 
-            SchematicObject schematic = ObjectSpawner.SpawnSchematic(Config.SchematicName, player.Position - new Vector3(0, 0.3f, 0), new Vector3(0, player.Rotation.eulerAngles.y, 0));
+            SchematicObject schematic = ObjectSpawner.SpawnSchematic(Config.SchematicName, player.Position - new Vector3(0, -0.3f, 0.1f), new Vector3(0, player.Rotation.eulerAngles.y, 0));
             if (schematic == null)
             {
-                Log.Error($"[SCP3127] Failed spawn schematic {Config.SchematicName}");
+                Log.Error($"Failed spawn schematic {Config.SchematicName}");
                 return;
             }
 
-            AudioPlayer audioPlayer = AudioUtility.CreateAndPlayAudio(nameAudio, $"boombox_{UnityEngine.Random.Range(0, 999999)}", false, schematic.Position, true, schematic.transform, true, 50, 5, 1f);
+            AudioPlayer audioPlayer = AudioUtility.CreateAndPlayAudio(nameAudio, $"boombox_{UnityEngine.Random.Range(0, 999999)}", false, schematic.Position, true, schematic.transform, true, 50, 5, 0.67f);
 
             if (audioPlayer == null)
             {
-                Log.Error($"[SCP3127] Failed spawn audio player");
+                Log.Error($" Failed spawn audio player");
                 return;
             }
             schematic.transform.parent = player.Transform;
