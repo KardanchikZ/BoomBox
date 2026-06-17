@@ -1,6 +1,5 @@
 ﻿using ChilliNoRules.Items.Scp3127;
 using ChilliNoRules.Utils.Models;
-using CustomPlayerEffects;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Attributes;
@@ -9,10 +8,8 @@ using Exiled.API.Features.Spawn;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs.Map;
 using Exiled.Events.EventArgs.Player;
-using PlayerRoles;
 using ProjectMER.Features;
 using ProjectMER.Features.Objects;
-using System.Linq;
 using UnityEngine;
 
 namespace BoomBox.Items
