@@ -40,7 +40,7 @@ namespace BoomBox.Items
             Exiled.Events.Handlers.Player.TogglingRadio += OnTogglingRadio;
             Exiled.Events.Handlers.Map.PickupAdded += PickupAdded;
             Exiled.Events.Handlers.Player.ChangingRadioPreset += ChangingRadioPreset;
-            Exiled.Events.Handlers.Player.DroppedItem += DroppedItem;
+            Exiled.Events.Handlers.Player.DroppingItem += DroppingItem;
             Exiled.Events.Handlers.Player.Died += Died;
             Exiled.Events.Handlers.Player.ChangingRole += ChangingRole;
             Exiled.Events.Handlers.Player.Left += Left;
@@ -53,7 +53,7 @@ namespace BoomBox.Items
             Exiled.Events.Handlers.Player.TogglingRadio -= OnTogglingRadio;
             Exiled.Events.Handlers.Map.PickupAdded -= PickupAdded;
             Exiled.Events.Handlers.Player.ChangingRadioPreset -= ChangingRadioPreset;
-            Exiled.Events.Handlers.Player.DroppedItem -= DroppedItem;
+            Exiled.Events.Handlers.Player.DroppingItem -= DroppingItem;
             Exiled.Events.Handlers.Player.Died -= Died;
             Exiled.Events.Handlers.Player.ChangingRole -= ChangingRole;
             Exiled.Events.Handlers.Player.Left -= Left;
@@ -95,7 +95,6 @@ namespace BoomBox.Items
             if (ev.Player == null) return;
             if (ev.Player.CurrentItem == null) return;
             if (!Check(ev.Player.CurrentItem)) return;
-            Clear(ev.Player);
             MusicId++;
             if (MusicId >= Plugin.Musics.Count)
             {
@@ -108,7 +107,7 @@ namespace BoomBox.Items
         {
             if (player == null) return;
 
-            SchematicObject schematic = ObjectSpawner.SpawnSchematic(Config.SchematicName, player.Position - new Vector3(0, -0.3f, 0.1f), new Vector3(0, player.Rotation.eulerAngles.y, 0));
+            SchematicObject schematic = ObjectSpawner.SpawnSchematic(Config.SchematicName, player.Position - new Vector3(0, -0.3f, 0), new Vector3(0, player.Rotation.eulerAngles.y, 0));
             if (schematic == null)
             {
                 Log.Error($"Failed spawn schematic {Config.SchematicName}");
@@ -156,9 +155,9 @@ namespace BoomBox.Items
             Clear(ev.Player);
         }
 
-        private void DroppedItem(DroppedItemEventArgs ev)
+        private void DroppingItem(DroppingItemEventArgs ev)
         {
-            if (!Check(ev.Player.CurrentItem)) return;
+            if (!Check(ev.Item)) return;
             Clear(ev.Player);
         }
 
