@@ -31,6 +31,7 @@ namespace BoomBox.Items
                 }
             }
         };
+        public override Vector3 Scale { get; set; } = new Vector3(2, 2, 2);
 
 
         int MusicId = 0;
@@ -86,6 +87,7 @@ namespace BoomBox.Items
             if (!Check(ev.Player.CurrentItem)) return;
             Clear(ev.Player);
             Create(ev.Player, Plugin.Musics[MusicId]);
+            ev.Radio.BatteryLevel -= 2;
         }
 
         private void ChangingRadioPreset(ChangingRadioPresetEventArgs ev)
@@ -100,12 +102,11 @@ namespace BoomBox.Items
             if (ev.Player.CurrentItem == null) return;
             if (!Check(ev.Player.CurrentItem)) return;
             MusicId += 1;
-            if (MusicId > Plugin.Musics.Count)
+            if (MusicId > Plugin.Musics.Count - 1)
             {
                 MusicId = 0;
             }
 
-            Log.Debug($"musicID: {MusicId}. Musics Count {Plugin.Musics.Count}");
             ev.Player.ShowHint($"Id: {MusicId}, Music Name: {Plugin.Musics[MusicId]}", 3);
         }
 
