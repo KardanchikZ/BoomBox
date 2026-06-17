@@ -21,15 +21,7 @@ namespace BoomBox.Items
         public override float Weight { get; set; } = 1f;
         public override SpawnProperties SpawnProperties { get; set; } = new()
         {
-            RoomSpawnPoints = new()
-            {
-                new RoomSpawnPoint
-                {
-                    Chance = 100,
-                    Room = RoomType.HczNuke,
-                    Offset = new Vector3(0, 0, 0)
-                }
-            }
+
         };
         public override Vector3 Scale { get; set; } = new Vector3(2, 2, 2);
 
