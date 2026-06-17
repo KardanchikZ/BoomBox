@@ -1,5 +1,4 @@
-﻿using Exiled.API.Enums;
-using Exiled.API.Features;
+﻿using Exiled.API.Features;
 using Exiled.API.Features.Attributes;
 using Exiled.API.Features.Pickups;
 using Exiled.API.Features.Spawn;
@@ -9,7 +8,6 @@ using Exiled.Events.EventArgs.Player;
 using ProjectMER.Features;
 using ProjectMER.Features.Objects;
 using UnityEngine;
-using VoiceChat;
 
 namespace BoomBox.Items
 {
