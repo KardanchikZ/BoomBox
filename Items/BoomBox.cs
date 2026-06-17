@@ -9,6 +9,7 @@ using Exiled.Events.EventArgs.Player;
 using ProjectMER.Features;
 using ProjectMER.Features.Objects;
 using UnityEngine;
+using VoiceChat;
 
 namespace BoomBox.Items
 {
@@ -70,7 +71,7 @@ namespace BoomBox.Items
                 Log.Warn("Музыки нет!");
                 return;
             }
-            if (ev.Radio.BatteryLevel == 0)
+            if (ev.Radio.BatteryLevel < 1)
             {
                 ev.Player.ShowHint("Бумбокс разрядился! :(", 3);
             }
@@ -79,7 +80,14 @@ namespace BoomBox.Items
             if (!Check(ev.Player.CurrentItem)) return;
             Clear(ev.Player);
             Create(ev.Player, Plugin.Musics[MusicId]);
-            ev.Radio.BatteryLevel -= 2;
+            if (ev.Radio.BatteryLevel > 3)
+            {
+                ev.Radio.BatteryLevel -= 2;
+            }
+            else
+            {
+                ev.Radio.BatteryLevel = 0;
+            }
         }
 
         private void ChangingRadioPreset(ChangingRadioPresetEventArgs ev)
