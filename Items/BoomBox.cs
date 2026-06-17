@@ -1,5 +1,4 @@
-﻿using ChilliNoRules.Items.Scp3127;
-using ChilliNoRules.Utils.Models;
+﻿
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Exiled.API.Features.Attributes;

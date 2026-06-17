@@ -1,6 +1,6 @@
 ﻿using ProjectMER.Features.Objects;
 
-namespace ChilliNoRules.Utils.Models
+namespace BoomBox
 {
     public class SchematicWithAudio
     {

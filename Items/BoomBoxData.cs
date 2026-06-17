@@ -1,8 +1,8 @@
-﻿using ChilliNoRules.Utils.Models;
+﻿
 using Exiled.API.Features;
 using System.Collections.Generic;
 
-namespace ChilliNoRules.Items.Scp3127
+namespace BoomBox
 {
     public static class BoomBoxData
     {
