@@ -72,18 +72,32 @@ namespace BoomBox.Items
 
         private void OnTogglingRadio(TogglingRadioEventArgs ev)
         {
-            Clear(ev.Player);
-            if (!Check(ev.Player.CurrentItem)) return;
             ev.IsAllowed = false;
+            if (Plugin.Musics.Count <= 0)
+            {
+                Log.Warn("Музыки нет!");
+                return;
+            }
+            if (ev.Player == null) return;
+            if (ev.Player.CurrentItem == null) return;
+            if (!Check(ev.Player.CurrentItem)) return;
+            Clear(ev.Player);
             Create(ev.Player, Plugin.Musics[MusicId]);
         }
 
         private void ChangingRadioPreset(ChangingRadioPresetEventArgs ev)
         {
-            Clear(ev.Player);
-            if (!Check(ev.Player.CurrentItem)) return;
             ev.IsAllowed = false;
-            MusicId = +1;
+            if (Plugin.Musics.Count <= 0)
+            {
+                Log.Warn("Музыки нет!");
+                return;
+            }
+            if (ev.Player == null) return;
+            if (ev.Player.CurrentItem == null) return;
+            if (!Check(ev.Player.CurrentItem)) return;
+            Clear(ev.Player);
+            MusicId++;
             if (MusicId > Plugin.Musics.Count)
             {
                 MusicId = 0;

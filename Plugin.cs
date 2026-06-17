@@ -3,6 +3,7 @@ using Exiled.CustomItems.API.Features;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace BoomBox
 {
@@ -21,7 +22,7 @@ namespace BoomBox
         public override void OnEnabled()
         {
             Instance = this;
-            LoadMusics();
+            Exiled.Events.Handlers.Map.Generated -= MapGenerated;
             CustomItem.RegisterItems();
 
             base.OnEnabled();
@@ -30,13 +31,17 @@ namespace BoomBox
         public override void OnDisabled()
         {
             Instance = null;
+            Exiled.Events.Handlers.Map.Generated -= MapGenerated;
             CustomItem.UnregisterItems();
             base.OnDisabled();
         }
-
+        private void MapGenerated()
+        {
+            LoadMusics();
+        }
         private void LoadMusics()
         {
-            string audioFolderPath = "Audios";
+            string audioFolderPath = Config.AudioFolder;
 
             if (Directory.Exists(audioFolderPath))
             {
@@ -46,6 +51,15 @@ namespace BoomBox
                 {
                     Musics.Add(Path.GetFileName(filePath));
                 }
+            }
+            if (Musics.Count > 0)
+            {
+                string allMusicsFile = string.Join(Environment.NewLine, Musics.Select(e => e.ToString()));
+                Log.Debug($"список музыки: {allMusicsFile}");
+            }
+            else
+            {
+                Log.Warn("Музыки нет!");
             }
         }
     }
