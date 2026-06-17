@@ -26,7 +26,6 @@ namespace BoomBox.Items
         };
         public override Vector3 Scale { get; set; } = new Vector3(2, 2, 2);
 
-
         int MusicId = 0;
 
         protected override void SubscribeEvents()

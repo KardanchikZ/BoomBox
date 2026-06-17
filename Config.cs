@@ -11,9 +11,8 @@ namespace BoomBox
         public bool Debug { get; set; } = true;
         [Description("Айди предмета")]
         public static uint IdBoomBox { get; set; } = 7;
-        [Description("Название схемы")]
         public static string SchematicName { get; set; } = "BoomBox";
-        [Description("Путь к папке с аудио")]
+
         public string AudioFolder { get; set; } = "BoomBoxAudios";
     }
 }
