@@ -5,9 +5,13 @@ using Exiled.API.Features.Spawn;
 using Exiled.CustomItems.API.Features;
 using Exiled.Events.EventArgs.Map;
 using Exiled.Events.EventArgs.Player;
+using MEC;
 using ProjectMER.Features;
 using ProjectMER.Features.Objects;
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
+
 
 namespace BoomBox.Items
 {
@@ -24,7 +28,6 @@ namespace BoomBox.Items
         };
         public override Vector3 Scale { get; set; } = new Vector3(2, 2, 2);
 
-        int MusicId = 0;
 
         protected override void SubscribeEvents()
         {
@@ -36,6 +39,7 @@ namespace BoomBox.Items
             Exiled.Events.Handlers.Player.ChangingRole += ChangingRole;
             Exiled.Events.Handlers.Player.Left += Left;
             Exiled.Events.Handlers.Server.RestartingRound += RestartingRound;
+            Exiled.Events.Handlers.Player.Handcuffing += Handcuffing;
             base.SubscribeEvents();
         }
 
@@ -49,62 +53,99 @@ namespace BoomBox.Items
             Exiled.Events.Handlers.Player.ChangingRole -= ChangingRole;
             Exiled.Events.Handlers.Player.Left -= Left;
             Exiled.Events.Handlers.Server.RestartingRound -= RestartingRound;
+            Exiled.Events.Handlers.Player.Handcuffing -= Handcuffing;
             base.UnsubscribeEvents();
         }
 
         private void PickupAdded(PickupAddedEventArgs ev)
         {
-            if (ev.Pickup is RadioPickup radio)
+            if (ev.Pickup is RadioPickup radio && Check(ev.Pickup))
             {
                 radio.IsEnabled = true;
             }
         }
-
+        private bool Check(Pickup pickup)
+        {
+            // Например, проверяем по Id кастомного предмета
+            return pickup is RadioPickup radio && Check(radio); // или проверка по свойству
+        }
         private void OnTogglingRadio(TogglingRadioEventArgs ev)
         {
             ev.IsAllowed = false;
-            if (Plugin.Musics.Count <= 0)
+
+            if (Plugin.Musics.Count == 0)
             {
-                Log.Warn("Музыки нет!");
+                Log.Warn("Нет музыки!");
                 return;
             }
+
             if (ev.Radio.BatteryLevel < 1)
             {
                 ev.Player.ShowHint("Бумбокс разрядился! :(", 3);
+                return;
             }
-            if (ev.Player == null) return;
-            if (ev.Player.CurrentItem == null) return;
-            if (!Check(ev.Player.CurrentItem)) return;
-            Clear(ev.Player);
-            Create(ev.Player, Plugin.Musics[MusicId]);
-            if (ev.Radio.BatteryLevel > 3)
+
+            if (ev.Player == null || ev.Player.CurrentItem == null || !Check(ev.Player.CurrentItem))
+                return;
+
+            Timing.CallDelayed(1, () =>
             {
-                ev.Radio.BatteryLevel -= 2;
-            }
-            else
+                Clear(ev.Player);
+            });
+            // Получаем индекс для игрока (если нет, то 0)
+            int index = 0;
+            BoomBoxData.MusicIndex.TryGetValue(ev.Player, out index);
+            Timing.CallDelayed(1, () =>
             {
-                ev.Radio.BatteryLevel = 0;
-            }
+                Create(ev.Player, Plugin.Musics[index]);
+            });
+
+            // Расход батареи: уменьшаем на 2, но не ниже 0
+            byte newBattery = (byte)Math.Max(0, ev.Radio.BatteryLevel - 2);
+            ev.Radio.BatteryLevel = newBattery;
         }
 
         private void ChangingRadioPreset(ChangingRadioPresetEventArgs ev)
         {
             ev.IsAllowed = false;
-            if (Plugin.Musics.Count <= 0)
-            {
-                Log.Warn("Музыки нет!");
-                return;
-            }
-            if (ev.Player == null) return;
-            if (ev.Player.CurrentItem == null) return;
-            if (!Check(ev.Player.CurrentItem)) return;
-            MusicId += 1;
-            if (MusicId > Plugin.Musics.Count - 1)
-            {
-                MusicId = 0;
-            }
 
-            ev.Player.ShowHint($"Id: {MusicId}, Music Name: {Plugin.Musics[MusicId]}", 3);
+            if (Plugin.Musics.Count == 0)
+                return;
+
+            if (ev.Player == null || ev.Player.CurrentItem == null || !Check(ev.Player.CurrentItem))
+                return;
+
+            // Получаем текущий индекс
+            int currentIndex = 0;
+            BoomBoxData.MusicIndex.TryGetValue(ev.Player, out currentIndex);
+
+            // Увеличиваем, зацикливаем
+            int newIndex = (currentIndex + 1) % Plugin.Musics.Count;
+            BoomBoxData.MusicIndex[ev.Player] = newIndex;
+
+            ev.Player.ShowHint($"Id: {newIndex}, Музыка: {Plugin.Musics[newIndex]}", 3);
+
+            // Если бумбокс уже играет – обновляем аудио
+            Timing.CallDelayed(1, () => 
+            {
+                if (BoomBoxData.BoomBoxes.TryGetValue(ev.Player, out SchematicWithAudio existing))
+                {
+                    // Уничтожаем старый аудиоплеер
+                    existing.AudioPlayer?.Destroy();
+                    // Создаём новый на той же позиции схематика
+                    AudioPlayer newAudio = AudioUtility.CreateAndPlayAudio(
+                        Plugin.Musics[newIndex],
+                        $"boombox_{UnityEngine.Random.Range(0, 999999)}",
+                        false,
+                        existing.Schematic.Position,
+                        true,
+                        existing.Schematic.transform,
+                        true,
+                        50, 5, 0.67f
+                    );
+                    existing.AudioPlayer = newAudio;
+                }
+            });
         }
 
         private void Create(Player player, string nameAudio)
@@ -135,42 +176,63 @@ namespace BoomBox.Items
         }
         private void Clear(Player player)
         {
-            if (!BoomBoxData.BoomBoxes.ContainsKey(player)) return;
-
-            if (!BoomBoxData.BoomBoxes.TryGetValue(player, out SchematicWithAudio schemaWithAudio)) return;
-
-            schemaWithAudio.Schematic?.Destroy();
-            schemaWithAudio.AudioPlayer?.Destroy();
-            BoomBoxData.BoomBoxes.Remove(player);
+            if (BoomBoxData.BoomBoxes.TryGetValue(player, out SchematicWithAudio schemaWithAudio))
+            {
+                schemaWithAudio.Schematic?.Destroy();
+                schemaWithAudio.AudioPlayer?.Destroy();
+                BoomBoxData.BoomBoxes.Remove(player);
+                BoomBoxData.MusicIndex.Remove(player);
+            }
         }
-
+        private void Handcuffing(HandcuffingEventArgs ev)
+        {
+            Timing.CallDelayed(1, () =>
+            {
+                Clear(ev.Player);
+            });
+        }
         private void Left(LeftEventArgs ev)
         {
-            Clear(ev.Player);
+            Timing.CallDelayed(1, () =>
+            {
+                Clear(ev.Player);
+            });
         }
 
         private void ChangingRole(ChangingRoleEventArgs ev)
         {
-            Clear(ev.Player);
+            Timing.CallDelayed(1, () =>
+            {
+                Clear(ev.Player);
+            });
         }
 
         private void Died(DiedEventArgs ev)
         {
-            Clear(ev.Player);
+            Timing.CallDelayed(1, () =>
+            {
+                Clear(ev.Player);
+            });
         }
 
         private void DroppingItem(DroppingItemEventArgs ev)
         {
             if (!Check(ev.Item)) return;
-            Clear(ev.Player);
+            Timing.CallDelayed(1, () =>
+            {
+                Clear(ev.Player);
+            });
         }
 
         private void RestartingRound()
         {
-            foreach (Player player in Player.List)
+            foreach (var kvp in BoomBoxData.BoomBoxes)
             {
-                Clear(player);
+                kvp.Value.Schematic?.Destroy();
+                kvp.Value.AudioPlayer?.Destroy();
             }
+            BoomBoxData.BoomBoxes.Clear();
+            BoomBoxData.MusicIndex.Clear();
         }
     }
 }

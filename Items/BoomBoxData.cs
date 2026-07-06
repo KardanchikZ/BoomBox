@@ -6,6 +6,7 @@ namespace BoomBox
 {
     public static class BoomBoxData
     {
-        public static Dictionary<Player, SchematicWithAudio> BoomBoxes { get; set; } = new();
+        public static Dictionary<Player, SchematicWithAudio> BoomBoxes = new Dictionary<Player, SchematicWithAudio>();
+        public static Dictionary<Player, int> MusicIndex = new Dictionary<Player, int>();
     }
 }
