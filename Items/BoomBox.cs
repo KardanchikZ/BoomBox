@@ -64,11 +64,7 @@ namespace BoomBox.Items
                 radio.IsEnabled = true;
             }
         }
-        private bool Check(Pickup pickup)
-        {
-            // Например, проверяем по Id кастомного предмета
-            return pickup is RadioPickup radio && Check(radio); // или проверка по свойству
-        }
+
         private void OnTogglingRadio(TogglingRadioEventArgs ev)
         {
             ev.IsAllowed = false;
